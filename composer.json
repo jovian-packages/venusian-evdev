@@ -1,0 +1,64 @@
+{
+    "name": "jovian/venusian-evdev",
+    "description": "Game pads from Linux evdev for Venusian Surface's HumanInput: the 'evdev' pad source, read with no window, display or session, through ext-posi.",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "venusian",
+        "surface",
+        "human-input",
+        "gamepad",
+        "evdev",
+        "linux"
+    ],
+    "license": "MIT",
+    "homepage": "https://venusian.projectsaturnstudios.com/ecosystem/jovian/venusian-evdev/0.10.x",
+    "support": {
+        "issues": "https://github.com/jovian-packages/venusian-evdev/issues",
+        "source": "https://github.com/jovian-packages/venusian-evdev"
+    },
+    "authors": [
+        {
+            "name": "Angel Gonzalez",
+            "email": "angel@projectsaturnstudios.com"
+        }
+    ],
+    "require": {
+        "php": "^8.4|^8.5|^8.6",
+        "ext-posi": "^0.10",
+        "venusian-surface/contracts": "^0.10.0",
+        "venusian-surface/human-input": "^0.10.0",
+        "venusian-voyager/nuts-and-bolts": "^0.10.1"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jovian\\Input\\Evdev\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jovian\\Input\\Evdev\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.10.x-dev"
+        },
+        "venusian": {
+            "providers": [
+                "Jovian\\Input\\Evdev\\Providers\\VenusianEvdevServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
