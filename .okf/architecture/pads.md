@@ -17,7 +17,7 @@ sources:
 
 # Source
 
-Listing at `connect()` and every 2 s: `/dev/input/event*` in natural order; a node is a pad when `/sys/class/input/<node>/device/capabilities/key` has `BTN_SOUTH` (hex words, most significant first, one per C long). Pad nodes opened `O_RDONLY | O_NONBLOCK`; `EACCES` → `HumanInputException` naming node and `input` group (from `connect()`, or from pad reads until a listing opens it); any other open failure = gone, skipped. Ids `evdev-<node>`. Unplug (read null): release, drop; the manager mails it.
+Listing at `connect()` and every 2 s: `/dev/input/event*` in natural order; a node is a pad when `/sys/class/input/<node>/device/capabilities/key` has `BTN_SOUTH` (hex words, most significant first, one per C long). Pad nodes opened `O_RDONLY | O_NONBLOCK`; `EACCES` → `HumanInputException` naming node and `input` group (from `connect()`, or from pad reads until a listing opens it); any other open failure = gone, skipped. Ids `evdev-<node>`. Unplug (read null): release, drop; the manager mails it. Each listing starts with `clearstatcache(true)`: a replug links the same node name to a new `input<N>`, and a ZTS PHP (the Pi's) resolves `/sys/class/input/<node>` through its realpath cache, holding the dead target up to `realpath_cache_ttl` (120 s).
 
 # Pad
 

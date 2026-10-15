@@ -155,6 +155,9 @@ final class EvdevPadSource implements PadSource
     private function list(bool $connecting): void
     {
         $this->listed_at = ($this->clock)();
+        // A replugged node's class link points at a new input<N>; a thread-safe PHP resolves paths
+        // through its realpath cache, which keeps the old target for realpath_cache_ttl.
+        clearstatcache(true);
         $paths = glob($this->dev.'/event*') ?: [];
         usort($paths, 'strnatcmp');
         $refused = [];

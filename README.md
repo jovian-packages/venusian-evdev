@@ -49,7 +49,7 @@ Plug and unplug mail: `input.gamepad.connected.<id>` and `input.gamepad.disconne
 - **Listing.** Nodes are listed at connect and every two seconds. Pads are found from sysfs (`BTN_SOUTH` in the key bits), so keyboard, touchpad and motion nodes are never opened.
 - **Buttons and axes.** Buttons are read by position. xpad (Xbox pads) sends X and Y by label, as `BTN_NORTH` and `BTN_WEST`, so on xpad they are swapped back: X is west, Y north, as on the sdl3 pad source. The sticks read −1…1 inside the node's `flat` deadzone. `ABS_Z`/`ABS_RZ` are the triggers (0…1) when the node has `ABS_RX`. The hat is the dpad.
 - **SYN_DROPPED.** Events up to the next report are dropped and the whole state is read again (`EVIOCGKEY`, `EVIOCGABS`).
-- **Unplug.** The pad is released (buttons up, axes centred) and reported disconnected. The next listing finds it again.
+- **Unplug.** The pad is released (buttons up, axes centred) and reported disconnected. The next listing finds it again, under the same node name or a new one.
 - **Identity.** `hardwareId()` is the node's `uniq` (a Bluetooth pad's address).
 - **Player lights.** `setPlayerIndex($i)` lights hid-playstation's player LEDs in SDL's patterns where the user may write them, and does nothing otherwise.
 

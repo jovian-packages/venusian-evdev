@@ -192,6 +192,49 @@ it('lists nodes again every two seconds, and only then', function (): void {
         ->and(array_keys($source->gameControllers()))->toBe(['evdev-event7']);
 });
 
+it('lists a node replugged under a new sysfs device at the next listing', function (): void {
+    $world = inputWorld();
+    [$dev, $sys] = $world;
+    // sysfs's class entry is a link to the device; a replug links the same node name to a new input<N>.
+    // The kernel makes and removes these, not PHP, so a shell does: PHP's own file calls drop its path caches.
+    $plugAs = function (string $input) use ($dev, $sys): void {
+        $device = "{$sys}/devices/{$input}/event18";
+        exec(sprintf(
+            'touch %s && mkdir -p %s && echo %s > %s && ln -s %s %s',
+            escapeshellarg("{$dev}/event18"),
+            escapeshellarg("{$device}/device/capabilities"),
+            escapeshellarg(DUALSENSE_KEYS),
+            escapeshellarg("{$device}/device/capabilities/key"),
+            escapeshellarg($device),
+            escapeshellarg("{$sys}/event18"),
+        ));
+    };
+    // Both devices first: fifo()'s unlink() clears PHP's path caches, which would hide the stale entry.
+    [$first, $write] = fifoDevice('event18', FakeProbe::dualSense());
+    [$second] = fifoDevice('event18', FakeProbe::dualSense());
+    $opens = [];
+    $clock = 0;
+    $source = padSource($world, $opens, $clock)->connect();
+    $plugAs('input60');
+    $opens['event18'] = fn (): EvdevDevice => $first;
+    $clock = 2_000_000_000;
+    $source->poll();
+    $listed = array_keys($source->gameControllers());
+    posix_close($write);
+    exec(sprintf('rm -rf %s %s %s', escapeshellarg("{$dev}/event18"), escapeshellarg("{$sys}/event18"), escapeshellarg("{$sys}/devices/input60")));
+    $source->poll();
+    $gone = $source->gameControllers();
+    $plugAs('input61');
+    $opens['event18'] = fn (): EvdevDevice => $second;
+    $clock = 4_000_000_000;
+    $source->poll();
+
+    expect($listed)->toBe(['evdev-event18'])
+        ->and($gone)->toBe([])
+        ->and(array_keys($source->gameControllers()))->toBe(['evdev-event18'])
+        ->and($second->isOpen())->toBeTrue();
+});
+
 it('refuses at connect naming the node and the group, closing what it opened first', function (): void {
     $world = inputWorld();
     plug($world, 'event2', DUALSENSE_KEYS);
