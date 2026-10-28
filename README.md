@@ -4,7 +4,7 @@ Game pads from Linux evdev for Venusian Surface's HumanInput: the `evdev` pad so
 
 ## Requirements
 
-- Linux, PHP 8.4+, ext-posi 0.10.
+- Linux, PHP 8.4+, ext-posi 0.11.
 - The user in the `input` group (`sudo usermod -aG input $USER`, then log in again). A node the user may not open is reported, naming the node and the group.
 
 ## Install
